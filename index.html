@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Formulário de Contato</title>
+
+  <style>
+
+    body {
+
+      font-family: Arial, sans-serif;
+
+      background-color: #cceeff;
+
+      margin: 0;
+
+      padding: 20px;
+
+    }
+
+
+
+    h2 {
+
+      text-align: center;
+
+      color: #004d99;
+
+    }
+
+
+
+    form {
+
+      background-color: #fff;
+
+      padding: 20px;
+
+      border-radius: 10px;
+
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+
+    }
+
+
+
+    label {
+
+      display: block;
+
+      font-weight: bold;
+
+      color: #004d99;
+
+    }
+
+
+
+    input[type="text"],
+
+    input[type="email"],
+
+    textarea {
+
+      width: 85%;
+
+      padding: 8px;
+
+      border-radius: 5px;
+
+      border: 1px solid #004d99;
+
+      margin-bottom: 10px;
+
+    }
+
+
+
+    input[type="button"] {
+
+      background-color: #004d99;
+
+      color: #fff;
+
+      padding: 10px 20px;
+
+      border: none;
+
+      border-radius: 5px;
+
+      cursor: pointer;
+
+      font-size: 16px;
+
+    }
+
+
+
+    input[type="button"]:hover {
+
+      background-color: #003366;
+
+    }
+
+
+
+    /* Estilos para o modal */
+
+    .modal {
+
+      display: none; 
+
+      position: fixed; 
+
+      z-index: 1; 
+
+      left: 0;
+
+      top: 0;
+
+      width: 100%; 
+
+      height: 100%; 
+
+      overflow: auto; 
+
+      background-color: rgba(0,0,0,0.4); 
+
+    }
+
+
+
+    .modal-content {
+
+      background-color: #fff;
+
+      margin: 15% auto; 
+
+      padding: 20px;
+
+      border-radius: 10px;
+
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+
+      width: 80%; 
+
+      text-align: center;
+
+    }
+
+
+
+    .close {
+
+      color: #aaa;
+
+      float: right;
+
+      font-size: 28px;
+
+      font-weight: bold;
+
+    }
+
+
+
+    .close:hover,
+
+    .close:focus {
+
+      color: black;
+
+      text-decoration: none;
+
+      cursor: pointer;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+
+
+<h2>Pedir Verificado</h2>
+
+
+
+<form id="contactForm" action="#">
+
+  <label for="nome">Nome completo:</label>
+
+  <input type="text" id="nome" name="nome" required>
+
+
+
+  <label for="whatsapp">Numero de telefone</label>
+
+  <input type="text" id="whatsapp" name="whatsapp" required>
+
+
+
+  <label for="email">E-mail:</label>
+
+  <input type="email" id="email" name="email" required>
+
+
+
+  <label for="mensagem">Digite uma descrição</label>
+
+  <textarea id="mensagem" name="mensagem" required></textarea>
+
+
+
+  <input type="button" value="Enviar Solicitação" onclick="enviarMensagem()">
+
+</form>
+
+  <text>As solicitaçães levam entorno de 30 dias para ser aprovada ou reprovada</text>
+  <text>qualque duvida pode entra em contato com o suportte</text>
+  <text>email do suporte logo abaixo.</text>
+  
+  <br> <text>synergynexus.suportte@gmail.com</text> <br>
+  
+  
+<!-- Modal de notificação -->
+
+<div id="myModal" class="modal">
+
+  <div class="modal-content">
+
+    <span class="close" onclick="fecharModal()">&times;</span>
+
+    <p id="modalText"></p>
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+  function enviarMensagem() {
+
+    const nome = document.getElementById('nome').value;
+
+    const whatsapp = document.getElementById('whatsapp').value;
+
+    const email = document.getElementById('email').value;
+
+    const mensagem = document.getElementById('mensagem').value;
+
+
+
+    const chatId = '-1002044862274'; // Seu chat ID
+
+    const botToken = '6958261506:AAHuE5DmDwaGEVr-7JfkCBdkV3We-rd4GsE'; // Seu bot token
+
+
+
+    const mensagemTelegram = `Nova mensagem do formulário de contato:\n\nNome: ${nome}\nWhatsApp: ${whatsapp}\nE-mail: ${email}\nMensagem: ${mensagem}`;
+
+
+
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+
+
+    const data = new URLSearchParams();
+
+    data.append('chat_id', chatId);
+
+    data.append('text', mensagemTelegram);
+
+
+
+    fetch(url, {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/x-www-form-urlencoded'
+
+      },
+
+      body: data
+
+    })
+
+      .then(response => {
+
+        if (response.ok) {
+
+          exibirModal('Mensagem enviada com sucesso para o Telegram!');
+
+        } else {
+
+          exibirModal('Houve um erro ao enviar a mensagem.');
+
+        }
+
+      })
+
+      .catch(error => {
+
+        exibirModal('Houve um erro ao enviar a mensagem.');
+
+        console.error(error);
+
+      });
+
+  }
+
+
+
+  function exibirModal(mensagem) {
+
+    document.getElementById('modalText').innerText = mensagem;
+
+    document.getElementById('myModal').style.display = 'block';
+
+  }
+
+
+
+  function fecharModal() {
+
+    document.getElementById('myModal').style.display = 'none';
+
+  }
+
+</script>
+
+
+
+</body>
+
+</html>
